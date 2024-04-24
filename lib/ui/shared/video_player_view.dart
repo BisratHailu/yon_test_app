@@ -41,7 +41,6 @@ class VideoPlayerView extends StatelessWidget {
                     _buildInfoSection(),
                     _buildProgressIndicator(videoPlayerModel),
                     _buildStartEndMin(videoPlayerModel),
-
                   ],
                 ),
         ),
@@ -54,7 +53,7 @@ class VideoPlayerView extends StatelessWidget {
           ? Align(
               alignment: Alignment.center,
               child: GestureDetector(
-                onTap: ()  =>  videoPlayerModel.play(),
+                onTap: () => videoPlayerModel.play(),
                 child: const Icon(
                   Icons.play_arrow,
                   color: YonTestColor.secondaryColor,
@@ -63,8 +62,8 @@ class VideoPlayerView extends StatelessWidget {
               ),
             )
           : GestureDetector(
-              onTap: ()  =>  videoPlayerModel.pause(),
-              child:  Container(
+              onTap: () => videoPlayerModel.pause(),
+              child: Container(
                 height: double.maxFinite,
                 width: double.maxFinite,
                 color: Colors.transparent,

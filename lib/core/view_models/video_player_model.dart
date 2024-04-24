@@ -20,8 +20,7 @@ class VideoPlayerModel extends BaseModel {
 
   void initializer(String video) async {
     initState<InitVideoPlayerViewState>(InitVideoPlayerViewState.Busy);
-
-    _controller = VideoPlayerController.asset(video);
+    _controller = VideoPlayerController.networkUrl(Uri.parse("https://kurazmediav1-frct1.streaming.media.azure.net/0ebafa80-e75d-45fd-bfe3-486cb21030e3/01.Overview_1280x720_AACAudio_612.mp4"),);
     await _controller.initialize();
     await _controller.play();
 
