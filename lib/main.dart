@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:yon_test/ui/shared/router.dart';
+import 'package:yon_test/ui/shared/router/router.dart';
 import 'package:yon_test/ui/shared/utils/theme.dart';
 import 'package:yon_test/ui/views/landing_view.dart';
 import 'package:yon_test/ui/views/splash_view.dart';

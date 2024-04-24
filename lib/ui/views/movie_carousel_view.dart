@@ -35,6 +35,7 @@ class _MovieCarouselViewState extends State<MovieCarouselView> {
       width: double.infinity,
       child: BaseView<YonTestModel>(
         builder: (context, yonTestModel, _) => PageView.builder(
+      physics: const BouncingScrollPhysics(),
           onPageChanged: (index) => yonTestModel.setCurrentIndex = index,
           itemBuilder: (context, index) {
             return _buildBannerItem(

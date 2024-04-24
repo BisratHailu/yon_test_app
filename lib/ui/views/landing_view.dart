@@ -48,7 +48,7 @@ class LandingView extends StatelessWidget {
           background: _buildExpandedView(yonTestModel),
           title: innerBoxIsScrolled
               ? const Text(
-                  'Test',
+                  'GAMMA',
                   style: TextStyle(
                       color: YonTestColor.secondaryColor,
                       fontWeight: FontWeight.w700),
