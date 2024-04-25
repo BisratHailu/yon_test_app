@@ -5,9 +5,12 @@ import 'package:yon_test/core/enums/view_states.dart';
 import 'package:yon_test/core/models/episode.dart';
 import 'package:yon_test/core/view_models/video_player_model.dart';
 import 'package:yon_test/ui/shared/base_view.dart';
+import 'package:yon_test/ui/shared/router/video_player_router.dart';
 import 'package:yon_test/ui/shared/utils/color.dart';
+import 'package:yon_test/ui/widgets/reusable_back_button.dart';
 
 import '../../core/models/movie.dart';
+import '../widgets/reusable_blur_back_button.dart';
 
 class VideoPlayerView extends StatelessWidget {
   static const kVideoPlayerView = 'video_player_view';
@@ -25,28 +28,46 @@ class VideoPlayerView extends StatelessWidget {
       },
       builder: (context, videoPlayerModel, _) => Scaffold(
         backgroundColor: YonTestColor.primaryColor,
-        body: Center(
-          child: videoPlayerModel.getState<InitVideoPlayerViewState>() ==
-                  InitVideoPlayerViewState.Busy
-              ? Container(
-                  color: YonTestColor.primaryColor,
-                  child: const CircularProgressIndicator(
-                    backgroundColor: YonTestColor.secondaryColor,
-                  ),
-                )
-              : Stack(
-                  children: [
-                    _buildVideoPlayer(videoPlayerModel),
-                    _buildButtons(videoPlayerModel),
-                    _buildInfoSection(),
-                    _buildProgressIndicator(videoPlayerModel),
-                    _buildStartEndMin(videoPlayerModel),
-                  ],
-                ),
-        ),
+        body:_buildStack(videoPlayerModel),
       ),
     );
   }
+
+
+  Widget _buildStack(VideoPlayerModel videoPlayerModel)=> Stack(
+    children: [
+      _buildBody(videoPlayerModel),
+      _buildBackButton()
+    ],
+  );
+
+  Widget _buildBody(VideoPlayerModel videoPlayerModel) =>   Center(
+    child: videoPlayerModel.getState<InitVideoPlayerViewState>() ==
+        InitVideoPlayerViewState.Busy
+        ? Container(
+      color: YonTestColor.primaryColor,
+      child: const CircularProgressIndicator(
+        backgroundColor: YonTestColor.secondaryColor,
+      ),
+    )
+        : Stack(
+      children: [
+        _buildVideoPlayer(videoPlayerModel),
+        _buildButtons(videoPlayerModel),
+        _buildLowerSection(videoPlayerModel)
+      ],
+    ),
+  );
+
+
+
+
+  Widget _buildBackButton() => const SafeArea(
+    child: Padding(
+      padding: EdgeInsets.only(top: 7, left: 10),
+      child: ReusableBackButton(),
+    ),
+  );
 
   Widget _buildButtons(VideoPlayerModel videoPlayerModel) =>
       !videoPlayerModel.controller.value.isPlaying
@@ -80,36 +101,54 @@ class VideoPlayerView extends StatelessWidget {
         ),
       );
 
-  Widget _buildProgressIndicator(VideoPlayerModel videoPlayerModel) => Align(
-        alignment: Alignment.bottomCenter,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 25),
-          child: VideoProgressIndicator(
-            videoPlayerModel.controller,
-            allowScrubbing: true,
-            colors: VideoProgressColors(
-                backgroundColor: YonTestColor.secondaryColor.withOpacity(0.25),
-                playedColor: YonTestColor.secondaryColor),
-          ),
-        ),
-      );
-
-  Widget _buildInfoSection() => Align(
+  Widget _buildLowerSection(VideoPlayerModel videoPlayerModel) => Align(
         alignment: Alignment.bottomLeft,
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 10,
-            right: 10,
-            bottom: 45,
-          ),
+        child:videoPlayerModel.isIndicatorVisible ? Padding(
+          padding: const EdgeInsets.only(bottom: 15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildTitle(),
-              _buildDescription(),
+              _buildInfoSection(),
+              const SizedBox(height: 7),
+              _buildProgressIndicator(videoPlayerModel),
+              const SizedBox(height: 5),
+              _buildStartEndMin(videoPlayerModel),
             ],
           ),
+        ):Container(),
+      );
+
+  Widget _buildProgressIndicator(VideoPlayerModel videoPlayerModel) =>
+      Container(
+        height: 20,
+        width: double.maxFinite,
+        margin: const EdgeInsets.only(right: 5, left: 2),
+        child: SliderTheme(
+          data: SliderThemeData(
+            trackHeight: 4,
+            overlayShape: SliderComponentShape.noOverlay,
+            thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7.0),
+          ),
+          child: Slider(
+            value: videoPlayerModel.value,
+            thumbColor: YonTestColor.secondaryColor,
+            activeColor: YonTestColor.secondaryColor,
+            inactiveColor: YonTestColor.secondaryColor.withOpacity(0.5),
+            onChanged: (newValue) => videoPlayerModel.onDrag(newValue),
+          ),
+        ),
+      );
+
+  Widget _buildInfoSection() => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildTitle(),
+            _buildDescription(),
+          ],
         ),
       );
 
@@ -130,29 +169,26 @@ class VideoPlayerView extends StatelessWidget {
             fontWeight: FontWeight.w300),
       );
 
-  Widget _buildStartEndMin(VideoPlayerModel videoPlayerModel) => Align(
-        alignment: Alignment.bottomCenter,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                videoPlayerModel.getCurrentDuration(),
-                style: const TextStyle(
-                    color: YonTestColor.secondaryColor,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w200),
-              ),
-              Text(
-                videoPlayerModel.getTotalDuration(),
-                style: const TextStyle(
-                    color: YonTestColor.secondaryColor,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w200),
-              )
-            ],
-          ),
+  Widget _buildStartEndMin(VideoPlayerModel videoPlayerModel) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              videoPlayerModel.getCurrentDuration(),
+              style:  TextStyle(
+                  color: YonTestColor.secondaryColor.withOpacity(0.75),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400),
+            ),
+            Text(
+              videoPlayerModel.getTotalDuration(),
+              style:  TextStyle(
+                  color: YonTestColor.secondaryColor.withOpacity(0.75),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400),
+            )
+          ],
         ),
       );
 }

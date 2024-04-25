@@ -15,7 +15,7 @@ class ReusableBlurBackButton extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(100),
         child: CircleAvatar(
-          radius: 20,
+          radius: 15,
           backgroundImage: AssetImage(image,),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 500, sigmaY: 500),
@@ -24,7 +24,7 @@ class ReusableBlurBackButton extends StatelessWidget {
               child: Icon(
                 Icons.arrow_back_ios,
                 color: YonTestColor.secondaryColor,
-                size: 25,
+                size: 15,
               ),
             ),
           ),
