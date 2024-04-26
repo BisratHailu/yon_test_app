@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:video_player/video_player.dart';
 import 'package:yon_test/core/enums/view_states.dart';
 import 'package:yon_test/core/models/episode.dart';
@@ -8,6 +9,7 @@ import 'package:yon_test/ui/shared/base_view.dart';
 import 'package:yon_test/ui/shared/router/video_player_router.dart';
 import 'package:yon_test/ui/shared/utils/color.dart';
 import 'package:yon_test/ui/widgets/reusable_back_button.dart';
+import 'package:yon_test/ui/widgets/reusable_menu_button.dart';
 
 import '../../core/models/movie.dart';
 import '../widgets/reusable_blur_back_button.dart';
@@ -37,8 +39,23 @@ class VideoPlayerView extends StatelessWidget {
   Widget _buildStack(VideoPlayerModel videoPlayerModel)=> Stack(
     children: [
       _buildBody(videoPlayerModel),
-      _buildBackButton()
+      _buildTopButtons()
     ],
+  );
+
+  Widget _buildTopButtons() => Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      _buildBackButton(),
+      _buildMenuButton()
+    ],
+  );
+
+      Widget _buildMenuButton() => const SafeArea(
+    child: Padding(
+      padding: EdgeInsets.only(top: 7, right: 10),
+      child: ReusableMenuButton(),
+    ),
   );
 
   Widget _buildBody(VideoPlayerModel videoPlayerModel) =>   Center(
